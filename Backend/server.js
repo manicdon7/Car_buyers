@@ -1,7 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const bcrypt = require("bcrypt"); // Import bcrypt
+const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+
+const secretKey = crypto.randomBytes(64).toString('hex');
+const secret_Key = secretKey;
 
 const app = express();
 
@@ -25,31 +32,49 @@ app.use(express.json());
 
 require("./models/card");
 const User = mongoose.model("CarInfo");
-app.post("/post", async (req, res) => {
+app.post('/post', async (req, res) => {
   const { companyname, modelname, year, amount } = req.body;
+  // const imagePath = req.file.path; // Store the file path
+
   try {
     await User.create({
       companyname,
       modelname,
       year,
       amount,
+      // imagePath, // Save the image path in the database
     });
-    res.send({ status: "ok" });
+    res.send({ status: 'ok' });
   } catch (error) {
-    res.send({ status: "error" });
+    res.send({ status: 'error' });
   }
 });
 
+
+app.get('/myPosts', verifyToken, async (req, res) => {
+  const username = req.username;
+
+  try {
+    const myPosts = await CarInfo.find({ creator: username });
+    res.json(myPosts);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
 // Define a route to fetch car information
-app.get("/fetchCars", async (req, res) => {
+app.get('/fetchCars', async (req, res) => {
   try {
     const carInfo = await User.find();
     res.json(carInfo);
   } catch (error) {
-    console.error("Error fetching car info:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error('Error fetching car info:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 app.use(express.json());
 require("../backend/models/signup");
@@ -77,18 +102,19 @@ app.post("/Login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Fetch the user's data from the database using the username
     const user = await sign.findOne({ username });
 
     if (!user) {
       return res.status(401).json({ error: "Invalid username or password" });
     }
 
-    // Compare the provided password with the hashed password from the database
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (passwordMatch) {
-      return res.json({ message: "Login successful" });
+      // Generate a JWT token with the username
+      const token = jwt.sign({ username }, secret_Key);
+
+      return res.json({ token });
     } else {
       return res.status(401).json({ error: "Invalid username or password" });
     }
@@ -98,21 +124,30 @@ app.post("/Login", async (req, res) => {
   }
 });
 
-app.get("/userdata", async (req, res) => {
-  try {
-    const user = await sign.findOne(); // Assuming you only have one user record
-    if (user) {
-      // Send the username as a JSON response
-      res.json({ username: user.username });
-    } else {
-      res.status(404).json({ error: "User not found" });
-    }
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+// Add a middleware function to verify JWT tokens
+function verifyToken(req, res, next) {
+  const token = req.headers.authorization;
 
+  if (!token) {
+    return res.status(401).json({ error: "Token not provided" });
+  }
+
+  jwt.verify(token, secret_Key, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ error: "Failed to authenticate token" });
+    }
+
+    // Store the username in the request for future use
+    req.username = decoded.username;
+
+    next();
+  });
+}
+
+// Add an endpoint to get the username based on the token
+app.get("/getUsername", verifyToken, (req, res) => {
+  res.json({ username: req.username });
+});
 
 app.listen(3000, () => {
   console.log("Server started on port 3000");

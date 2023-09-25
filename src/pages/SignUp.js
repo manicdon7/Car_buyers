@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import './App.css';
 
 function SignUp(){
     const [username,setUsername] = useState('');
     const [password, setPassword] = useState('');
-
+    
     function post() {
         const _username = document.getElementById('username').value;
         const _password = document.getElementById('password').value;
@@ -31,10 +30,13 @@ function SignUp(){
           }),
           }).then((res)=>res.json({status:"ok"}))
             .then((data) => {
+              window.location.href = "/Login";
               console.log(data,"userPost");
             })
       }
-
+      function log(){
+        window.location.href = '/Login';
+      }
     return(
         <div className="bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400 bg-cover pb-6 h-screen">
             <h1 className=' text-6xl text-center pt-10 text-gray-800 underline'>CarBuyer</h1>
@@ -48,6 +50,7 @@ function SignUp(){
         <center className=''>
           <input type='button' value='SignUp' onClick={post} className='text-white mt-5 bg-red-600 hover:text-red-600 hover:bg-white rounded-md text-center' /><br /><br />
         </center>
+        <center>Already have an account? <span onClick={log} className=" hover:text-red-500 cursor-pointer">Login</span></center>
     </div>
     )
 }

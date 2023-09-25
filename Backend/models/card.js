@@ -6,6 +6,7 @@ const UserDetailsSchema = new mongoose.Schema(
         modelname: String,
         year: String,
         amount: String,
+        creator: String,
     },
     {
         collection: "CarInfo",
