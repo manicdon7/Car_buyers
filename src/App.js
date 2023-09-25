@@ -38,7 +38,6 @@ function App() {
   const [carInfoList, setCarInfoList] = useState([]);
   const [user,setUser] = useState('');
 
-
   function post() {
     const _companyname = document.getElementById('name').value;
     const _modelname = document.getElementById('desc').value;
