@@ -12,6 +12,7 @@ const secret_Key = secretKey;
 
 const app = express();
 
+
 // Allow requests from the specified frontend origin
 app.use(cors());
 const dbURI = "mongodb+srv://manikandan05082003:Manicdon07%40@cluster0.scriurb.mongodb.net/Cars";
