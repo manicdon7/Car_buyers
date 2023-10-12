@@ -150,8 +150,7 @@ app.get("/getUsername", verifyToken, (req, res) => {
   res.json({ username: req.username });
 });
 
-=======
->>>>>>> ec19bb912209f4feb9c061107293c5cc53d09229
+
 app.listen(3000, () => {
   console.log("Server started on port 3000");
 });
