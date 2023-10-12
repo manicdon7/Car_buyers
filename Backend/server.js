@@ -51,7 +51,6 @@ app.post('/post', async (req, res) => {
   }
 });
 
-
 app.get('/myPosts', verifyToken, async (req, res) => {
   const username = req.username;
 
