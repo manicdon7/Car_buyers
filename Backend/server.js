@@ -128,7 +128,6 @@ app.post("/Login", async (req, res) => {
 function verifyToken(req, res, next) {
   const token = req.headers.authorization;
 
-<<<<<<< HEAD
   if (!token) {
     return res.status(401).json({ error: "Token not provided" });
   }
