@@ -13,5 +13,4 @@ const UserDetailsSchema = new mongoose.Schema(
     }
 );
 
-
 mongoose.model("CarInfo", UserDetailsSchema);
