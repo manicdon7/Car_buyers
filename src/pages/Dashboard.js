@@ -8,7 +8,7 @@ function Dashboard() {
   const [carInfoList, setCarInfoList] = useState([]);
   const [user, setUser] = useState('');
   const [myPosts, setMyPosts] = useState([]);
-  const [showMyPosts, setShowMyPosts] = useState(false); // State to toggle showing user's posts
+  const [showMyPosts, setShowMyPosts] = useState(false); 
 
   function sign() {
     window.location.href = '/signup';
