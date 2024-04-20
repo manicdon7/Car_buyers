@@ -16,7 +16,7 @@ function SignUp(){
         setUsername('');
         setPassword('');
       }
-      fetch("http://localhost:3000/signup", {
+      fetch("http://localhost:5000/signup", {
           method:"POST",
           crossDomain:true,
           headers:{

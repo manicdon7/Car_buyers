@@ -34,7 +34,7 @@ app.use(express.json());
 require("./models/card");
 const User = mongoose.model("CarInfo");
 app.post('/post', async (req, res) => {
-  const { companyname, modelname, year, amount } = req.body;
+  const { companyname, modelname, year, amount, username } = req.body;
   // const imagePath = req.file.path; // Store the file path
 
   try {
@@ -43,7 +43,7 @@ app.post('/post', async (req, res) => {
       modelname,
       year,
       amount,
-      // imagePath, // Save the image path in the database
+      username
     });
     res.send({ status: 'ok' });
   } catch (error) {
@@ -51,11 +51,14 @@ app.post('/post', async (req, res) => {
   }
 });
 
-app.get('/myPosts', verifyToken, async (req, res) => {
-  const username = req.username;
+app.get('/myPosts', async (req, res) => {
+  const username = req.query.username; // Retrieve username from query parameter
+  const token = req.headers.authorization;
+  console.log(username);
 
   try {
-    const myPosts = await CarInfo.find({ creator: username });
+    // Use the retrieved username to filter posts
+    const myPosts = await User.find({ username: username });
     res.json(myPosts);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
@@ -64,17 +67,16 @@ app.get('/myPosts', verifyToken, async (req, res) => {
 
 
 
-// Define a route to fetch car information
 app.get('/fetchCars', async (req, res) => {
-  try {
+  try { 
     const carInfo = await User.find();
+    console.log(carInfo);
     res.json(carInfo);
   } catch (error) {
     console.error('Error fetching car info:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 
 app.use(express.json());
 require("../backend/models/signup");
@@ -127,6 +129,7 @@ app.post("/Login", async (req, res) => {
 // Add a middleware function to verify JWT tokens
 function verifyToken(req, res, next) {
   const token = req.headers.authorization;
+  console.log(token);
 
   if (!token) {
     return res.status(401).json({ error: "Token not provided" });
@@ -150,6 +153,6 @@ app.get("/getUsername", verifyToken, (req, res) => {
 });
 
 
-app.listen(3000, () => {
-  console.log("Server started on port 3000");
+app.listen(5000, () => {
+  console.log("Server started on port 5000");
 });

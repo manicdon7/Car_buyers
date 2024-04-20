@@ -7,7 +7,7 @@ function Login() {
   // Function to handle login
   const handleLogin = () => {
     // Make a POST request to your server to authenticate the user
-    fetch("http://localhost:3000/Login", {  
+    fetch("http://localhost:5000/Login", {  
       method: "POST",
       headers: {
         "Content-Type": "application/json",
