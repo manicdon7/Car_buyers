@@ -116,12 +116,11 @@ function Dashboard() {
 	useEffect(() => {
 		const fetchUsername = () => {
 			const token = localStorage.getItem("token");
-
 			if (token) {
 				fetch("http://localhost:5000/getUsername", {
 					method: "GET",
 					headers: {
-						Authorization: token,
+						Authorization: `Bearer ${token}`,
 						"Content-Type": "application/json",
 					},
 				})
